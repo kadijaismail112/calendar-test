@@ -89,4 +89,4 @@ def create_event(message):
 
 
 if __name__ == '__main__':
-    create_event()
+    create_event("Create a calendar invite for 10:00 AM tomorrow with John Doe")
