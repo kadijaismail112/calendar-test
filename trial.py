@@ -78,7 +78,7 @@ def create_event(message):
 
     try:
         service = build('calendar', 'v3', credentials=creds)
-        event_json = Event(**message)
+        event_json = Event(**message) # this will turn message into JSON --theoretically
         event = service.events().insert(calendarId='primary', body=event_json).execute()
         print('Event created: %s' % (event.get('htmlLink')))
         return 1
