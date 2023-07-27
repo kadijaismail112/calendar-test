@@ -1,9 +1,4 @@
-from __future__ import print_function
-
-import datetime
 import os.path
-
-from pydantic import BaseModel, Field
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -42,19 +37,7 @@ SCOPES = ['https://www.googleapis.com/auth/calendar']
 #   },
 # }
 
-class Event(BaseModel):
-    summary: str = Field(..., example="Meeting with John")
-    location: str = Field(..., example="Zoom")
-    description: str = Field(..., example="Discussing the new project")
-    start_time: datetime = Field(..., example="2021-10-10T09:00:00-07:00")
-    end_time: datetime = Field(..., example="2021-10-10T10:00:00-07:00")
-    recurrence: str = Field(..., example="RRULE:FREQ=DAILY;COUNT=2")
-    email1: str = Field(..., example="kadija@")
-    email2: str = Field(..., example="kadija@")
-    reminders: str = Field(..., example="{'useDefault': False, 'overrides': [{'method': 'email', 'minutes': 24 * 60}, {'method': 'popup', 'minutes': 10}]}")
-
-
-def create_event(message):
+def create_event(event_json):
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
     """
@@ -78,15 +61,10 @@ def create_event(message):
 
     try:
         service = build('calendar', 'v3', credentials=creds)
-        event_json = Event(**message) # this will turn message into JSON --theoretically
         event = service.events().insert(calendarId='primary', body=event_json).execute()
         print('Event created: %s' % (event.get('htmlLink')))
         return 1
 
     except HttpError as error:
         print('An error occurred: %s' % error)
-        return 0
-
-
-if __name__ == '__main__':
-    create_event("Create a calendar invite for 10:00 AM tomorrow with John Doe")
+        return 0 
